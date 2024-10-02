@@ -73,3 +73,49 @@ npm run start
 # Create frontend prod build
 npm run build
 ```
+## Contributing to CredLock 🎓
+
+We welcome contributions from the community to improve CredLock. To contribute, please follow these steps:
+
+### 1. Fork the Repository
+Start by forking this repository to your GitHub account.
+
+### 2. Create a New Branch
+Before making any changes, create a new branch from the `main` branch. Use a meaningful name for your branch:
+```
+bash
+git checkout -b feature/your-feature-name
+```
+### 3. Make Your Changes
+```
+Once you're in your new branch, you can start making the necessary changes or adding new features. Make sure to follow the coding conventions and best practices of the project.
+
+#### How to work on your changes:
+- Modify the codebase to implement the feature, fix, or update.
+- Test your changes thoroughly.
+- Ensure your code is clean and formatted according to the project's guidelines.
+  ```
+### 4. Commit Your Changes
+```
+Once you've made and tested your changes, stage and commit them using a descriptive commit message.
+
+Commands to commit your changes:
+git add .
+git commit -m "Descriptive message explaining the changes"
+
+Make sure your commit message is clear and reflects the purpose of the changes you've made.
+```
+### 5. Push to Your Fork
+```
+Push your branch to your forked repository:
+git push origin feature/your-feature-name
+```
+### 6. Submit a Pull Request
+```
+Go to your forked repository on GitHub and submit a pull request to the original repository.
+
+Provide a clear description of the changes you've made.
+Link any relevant issues if applicable.
+Request a review from the project maintainers.
+
+```
