@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUser, FaEnvelope, FaLock, FaKey } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaKey, FaEyeSlash, FaEye } from "react-icons/fa";
 import Footer from "../components/common/Footer";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -16,6 +16,17 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [showPassword, setshowPassword] = useState(false);
+  const [showConfirmPassword, setshowConfirmPassword] = useState(false);
+
+  // toggle password
+  const togglePassword = () => {
+    setshowPassword(!showPassword);
+  }
+
+  const toggleConfirmPassword = () => {
+    setshowConfirmPassword(!showConfirmPassword);
+  }
 
   const handleOnChange = (e) => {
     if (e.target.name === "firstName") {
@@ -121,28 +132,40 @@ const SignUp = () => {
             </div>
             <div className="flex items-center mb-4">
               <FaLock className="text-lg me-3" />
-              <div className="form-outline flex-grow">
+              <div className="form-outline flex-grow flex items-center relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
                   onChange={handleOnChange}
                   className="form-control form-control px-3 py-2 rounded-3xl border-2 border-black w-full"
                   placeholder="Password"
                 />
+                {
+                  password ? 
+                <span className="absolute right-3 cursor-pointer">
+                  {showPassword ? <FaEyeSlash onClick={togglePassword} className="text-base" /> : <FaEye onClick={togglePassword} className="text-base" />}
+                </span>
+                : <></>}
               </div>
             </div>
             <div className="flex items-center mb-4  rounded-sm border-black w-full">
               <FaKey className="text-lg me-3" />
-              <div className="form-outline flex-grow">
+              <div className="form-outline flex-grow flex items-center relative">
                 <input
-                  type="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={confirmPassword}
                   onChange={handleOnChange}
                   className="form-control form-control px-3 py-2 rounded-3xl border-2 border-black w-full"
                   placeholder="Repeat your password"
                 />
+                {
+                  confirmPassword ? 
+                <span className="absolute right-3 cursor-pointer">
+                  {showConfirmPassword ? <FaEyeSlash onClick={toggleConfirmPassword} className="text-base" /> : <FaEye onClick={toggleConfirmPassword} className="text-base" />}
+                </span>
+                : <></>}
               </div>
             </div>
 
