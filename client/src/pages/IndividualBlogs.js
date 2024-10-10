@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// import axios from "axios";
-// // import Comment from "./Comment";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import { FaFacebook, FaTwitter } from "react-icons/fa";
-
-import "../utils/blog.css";
 import { formattedDate } from "../utils/formattedDate";
 import { useSelector } from "react-redux";
 import {
   getSingleBlog,
   dislikeBlog,
   likeBlog,
-  getCommentsByBlogId,
   addComments,
   deleteBlog,
   deleteComment,
@@ -23,30 +16,23 @@ import { BiCommentDots, BiDislike, BiLike, BiTrash } from "react-icons/bi";
 import { FaCalendarDay } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
-const socket = io("/", {
-  reconnection: true,
-});
+
+const socket = io("/", { reconnection: true });
 
 const IndividualBlog = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const { token } = useSelector((state) => state.auth);
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
-  const [commentsRealTime, setCommentsRealTime] = useState([]);
-  const [blogComment, setBlogComment] = useState([]);
   const [showComments, setShowComments] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [confirmationModal, setConfirmationModal] = useState(null);
   const { userDetails } = useSelector((state) => state.profile);
-  console.log("user just after ", userDetails);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchBlog = async () => {
       try {
         const response = await getSingleBlog(id, token);
         setBlog(response.data);
-        setBlogComment(response?.data?.comments);
         setShowComments(true);
       } catch (error) {
         console.error("Error fetching blog:", error);
@@ -56,31 +42,11 @@ const IndividualBlog = () => {
     fetchBlog();
   }, [id, token]);
 
-  useEffect(() => {
-    console.log("SOCKET IO", socket);
-    socket.on("new-comment", (newComment) => {
-      console.log("newcomment", newComment);
-      setCommentsRealTime(newComment);
-    });
-    // setComments(blog?.comments);
-  }, []);
-  // useEffect(() => {
-
-  // }); // Update the comments state when the blog changes
-  console.log("blog", blog);
-  console.log("user", userDetails);
-  if (!blog) {
-    return <div>Loading...</div>; // Render loading indicator while blog is being fetched
-  }
-
   const handleUpVote = async () => {
     try {
       await likeBlog(id, token);
-      // Refresh the blog data after upvoting
       const response = await getSingleBlog(id, token);
-      console.log("after liked", response);
       setBlog(response.data);
-      console.log("blog liked");
     } catch (error) {
       console.error("Error upvoting blog:", error);
     }
@@ -89,280 +55,180 @@ const IndividualBlog = () => {
   const handleDownVote = async () => {
     try {
       await dislikeBlog(id, token);
-      // Refresh the blog data after downvoting
       const response = await getSingleBlog(id, token);
       setBlog(response.data);
-      // setShowComments(false);
-      console.log("blog disliked");
     } catch (error) {
       console.error("Error downvoting blog:", error);
     }
   };
 
   const onDelete = async (blogId) => {
-    setLoading(true);
-    // const complaint_Id = blogId.toString();
-    console.log("blogId", blogId);
-
     const result = await deleteBlog(blogId, token);
-
-    console.log("Deleted Blog", result);
     if (result) {
-      console.log("deleting blog");
-      // setComplaints(result);
       navigate("/");
-
-      // toast.success("Complaint Deleted Succesfully");
     }
-    setConfirmationModal(null);
-    setLoading(false);
   };
-  // comment delete
+
   const onDeleteComment = async (commentId) => {
-    setLoading(true);
-    // const complaint_Id = blogId.toString();
-    console.log("blogId", commentId);
-
-    const result = await deleteComment(commentId, token);
-
-    console.log("Deleted comment", result);
-    if (result) {
-      console.log("deleting comment");
-      // setComplaints(result);
-
-      // toast.success("Complaint Deleted Succesfully");
-    }
-    setConfirmationModal(null);
-    setLoading(false);
+    await deleteComment(commentId, token);
   };
 
   const handleAddComment = async (e) => {
     e.preventDefault();
     try {
-      const blogId = id;
-      const content = comment;
-      const response = await addComments(blogId, content, token); // Assuming there's a function to add a comment to a blog
-      console.log("response in add comment", response);
-      if (response) {
-        // Update the local state or fetch the updated blog again
-        setComment(""); // Clear the comment input
-        console.log("response in add comment", response);
-        setComments(response?.data?.data?.comments);
-        setShowComments(false);
-        console.log("setComments comment", comments);
-        toast.success("comments added");
-        socket.emit("comment", response?.data?.data?.comments);
-      } else {
-        console.error("Error adding comment");
-      }
+      const response = await addComments(id, comment, token);
+      setComment("");
+      toast.success("Comment added!");
+      socket.emit("comment", response.data.data.comments);
     } catch (error) {
       console.error("Error adding comment:", error);
     }
   };
-  const url = window.location.href;
-  console.log("url", url);
-  // let uiCommentUpdate =
-  //   commentsRealTime.length > 0 ? commentsRealTime : comments;
-  // console.log("comments in individual blog", commentsRealTime);
-  console.log("comment without real time", blogComment);
+
+  if (!blog) {
+    return <div className="text-center">Loading...</div>;
+  }
+
   return (
-    <div className="container">
+    <div className="container mx-auto my-10 p-8 bg-white rounded-lg shadow-lg max-w-4xl">
       <div className="cs-blog-detail">
-        <div className="cs-main-post">
-          <figure>
+        <div className="cs-main-post mb-6">
+          <figure className="w-full h-80 overflow-hidden rounded-lg shadow-md">
             <img
-              onLoad={() => {
-                /* handle onLoad event */
-              }}
-              data-pagespeed-url-hash="2714250504"
-              alt="jobline-blog (8)"
               src={blog?.coverImg}
+              alt="Blog Cover"
+              className="w-full h-full object-cover transition-transform duration-300 transform hover:scale-105"
             />
           </figure>
         </div>
-        <div className="cs-post-title">
-          <div className="cs-author">
-            <div className="cs-text">
-              <p className=" border-e-slate-900 bg-slate-200 p-3">
+
+        <div className="cs-post-title mt-4 mb-6">
+          <div className="flex justify-between items-center px-6">
+            <div className="cs-author">
+              <p className="bg-gray-200 text-center text-gray-900 mb-2 px-4 py-2 rounded-full font-bold text-lg uppercase">
                 {blog?.status}
               </p>
               <a
                 href={`/auth/getUserByUsername/${blog?.createdBy?.username}`}
-                className=" font-extrabold text-2xl uppercase"
+                className="text-gray-800 font-extrabold text-3xl hover:text-amber-600 transition duration-300"
               >
                 {blog?.createdBy?.firstName} {blog?.createdBy?.lastName}
               </a>
             </div>
-          </div>
-          <div className="flex flex-row gap-4 px-3 justify-end ">
-            {userDetails?.data?.isModerator && (
-              <span className="post-date">
+            <div className="flex gap-6 items-center">
+              {userDetails?.data?.isModerator && (
                 <BiTrash
-                  id={blog?._id}
-                  className="delete-icon text-red-400 cursor-pointer"
-                  size={24}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(blog?._id);
-                  }}
+                  className="text-red-600 cursor-pointer hover:text-red-800 transition duration-300 transform hover:scale-110"
+                  size={32}
+                  onClick={() => onDelete(blog?._id)}
                 />
-              </span>
-            )}
-
-            <span className="post-date">
-              <i className="cs-color icon-calendar6"></i>
-              <BiLike aria-hidden="true" size={20} onClick={handleUpVote} />
-              {blog?.upvotes?.length}
-            </span>
-            <span className="post-date">
-              {/* <i className="cs-color icon-calendar6"></i> */}
-              <BiDislike
-                aria-hidden="true"
-                size={20}
-                onClick={handleDownVote}
-              />
-              {blog?.downvotes?.length}
-            </span>
-            <span className="post-date">
-              <FaCalendarDay />
-              {formattedDate(blog?.createdBy?.createdAt)}
-            </span>
-            <span className="post-comment">
-              <p className="">
-                {" "}
-                <BiCommentDots aria-hidden="true" size={20} />
-                {blog?.comments?.length}
-              </p>
-
-              {/* </div> */}
-            </span>
+              )}
+              <div className="flex items-center text-gray-700">
+                <BiLike size={32} className="cursor-pointer" onClick={handleUpVote} />
+                <span className="ml-2 text-xl">{blog?.upvotes?.length}</span>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <BiDislike size={32} className="cursor-pointer" onClick={handleDownVote} />
+                <span className="ml-2 text-xl">{blog?.downvotes?.length}</span>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <FaCalendarDay size={28} />
+                <span className="ml-2 text-lg">{formattedDate(blog?.createdBy?.createdAt)}</span>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <BiCommentDots size={32} />
+                <span className="ml-2 text-xl">{blog?.comments?.length}</span>
+              </div>
+            </div>
           </div>
         </div>
-        {/* shareing on social media */}
-        <div className="flex gap-4">
-          <FacebookShareButton
-            url={window.location.href} // Use window.location.href to get the current page URL
-            quote={blog?.title} // Use the blog title as the share quote
-            // hashtag="#yourhashtag" // Add a hashtag if needed
-            content={blog?.content}
-          >
-            <FaFacebook
-              className="cursor-pointer p-1 "
-              aria-hidden="true"
-              size={36}
-            />
+
+        {/* Social Media Share Buttons */}
+        <div className="flex gap-6 mb-6 px-6">
+          <FacebookShareButton url={window.location.href} quote={blog?.title}>
+            <FaFacebook size={40} className="text-gray-600 cursor-pointer hover:text-gray-800 transition-transform duration-300 transform hover:scale-110" />
           </FacebookShareButton>
-          <TwitterShareButton
-            url={window.location.href} // Use window.location.href to get the current page URL
-            title={blog?.title} // Use the blog title as the tweet text
-            // hashtags={["yourhashtag"]} // Add hashtags if needed
-            content={blog?.content}
-          >
-            <FaTwitter
-              className="cursor-pointer p-1 "
-              aria-hidden="true"
-              size={36}
-            />
+          <TwitterShareButton url={window.location.href} title={blog?.title}>
+            <FaTwitter size={40} className="text-gray-600 cursor-pointer hover:text-gray-800 transition-transform duration-300 transform hover:scale-110" />
           </TwitterShareButton>
         </div>
 
-        <div className="cs-post-option-panel">
-          <div className="rich-editor-text">
-            <h2 className="text-slate-900 font-serif text-xl uppercase">
-              {blog?.title}
-            </h2>
-            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <blockquote className="text-left-align">
-                {/* <span> {blog?.content}</span> */}
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: blog.content,
-                  }}
-                />
-                ;
-              </blockquote>
-            </div>
-            <p></p>
+        {/* Blog Content */}
+        <div className="cs-post-option-panel mb-8 bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-4xl text-center font-bold text-gray-800 mb-4 hover:text-amber-500 transition-colors duration-300">
+            {blog?.title}
+          </h2>
+          <div className="text-gray-700 text-lg leading-relaxed">
+            <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+          </div>
+          <div className="mt-4 flex gap-4 items-center text-gray-500">
+            <span className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-sm font-semibold">
+              {blog?.status}
+            </span>
+            <span className="text-sm">{formattedDate(blog?.createdBy?.createdAt)}</span>
           </div>
         </div>
-        <div className="cs-tags">
-          <div className="tags">
+
+        {/* Tags */}
+        <div className="cs-tags mb-6 px-6">
+          <h3 className="font-semibold text-gray-800 mb-2 text-2xl">Tags</h3>
+          <div className="flex flex-wrap gap-2">
             {blog?.tags.map((tag, index) => (
-              <span key={index}>
-                <ul>
-                  <li>
-                    <a
-                      rel="tag"
-                      href="http://jobcareer.chimpgroup.com/jobdoor/tag/college/"
-                    >
-                      {tag}
-                    </a>
-                  </li>
-                </ul>
-              </span>
+              <a
+                key={index}
+                href="#"
+                className="text-sm text-gray-700 bg-gray-200 px-4 py-2 rounded-lg transition duration-300 hover:bg-gray-300"
+              >
+                {tag}
+              </a>
             ))}
           </div>
         </div>
-        <div className="comment-section">
-          <h3>Add a Comment</h3>
-          <form onSubmit={handleAddComment}>
+
+        {/* Comments Section */}
+        <div className="comment-section mb-8 bg-white shadow-lg rounded-lg p-6">
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">Add a Comment</h3>
+          <form onSubmit={handleAddComment} className="space-y-4">
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add your comment here..."
-            ></textarea>
-            <button type="submit">Add Comment</button>
+              className="w-full p-4 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-300"
+            />
+            <button
+              type="submit"
+              className="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition duration-300"
+            >
+              Add Comment
+            </button>
           </form>
-        </div>
-        {!showComments && blog?.comments && (
-          <div className="comments p-4">
-            <h3 className="text-lg font-semibold mb-4">Comments</h3>
-            {comments.map((comment) => (
-              <div key={comment._id} className="comment mb-4">
-                <p className="text-sm text-gray-600">
-                  By {comment?.createdBy?.firstName}{" "}
-                  {comment?.createdBy?.lastName} on{" "}
-                  {formattedDate(comment?.createdAt)}
-                </p>
-                <p className="text-base">{comment.content}</p>
-              </div>
-            ))}
-          </div>
-        )}
-        {showComments && (
-          <div className="comments p-4">
-            <h3 className="text-lg font-semibold mb-4">Comments</h3>
-            {blogComment.map((comment) => (
-              <div key={comment._id} className="comment mb-4">
-                <p className="text-sm text-gray-600">
-                  <span className="font-bold">
-                    {comment?.createdBy?.firstName}
-                  </span>{" "}
-                  <span className="font-bold">
-                    {comment?.createdBy?.lastName}
-                  </span>{" "}
-                  on {formattedDate(comment?.createdAt)}
-                  <span className="font-bold ">
-                    {userDetails?.data?.isModerator && ( // Display delete icon only for moderators
-                      <span
-                        className="delete-comment-icon"
-                        onClick={() => onDeleteComment(comment._id)}
-                      >
-                        <BiTrash
-                          className="cursor-pointer text-slate-600"
-                          size={20}
-                        />
-                      </span>
-                    )}
-                  </span>
-                </p>
-                <p className="text-base">{comment.content}</p>
-              </div>
-            ))}
-          </div>
-        )}
 
-        {/* adding comments */}
+          {showComments && blog?.comments?.length > 0 && (
+            <div className="comments mt-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Comments</h3>
+              {blog?.comments.map((comment) => (
+                <div key={comment._id} className="mb-4 border-b pb-4 flex flex-col">
+                  <p className="text-base text-gray-700 font-medium bg-gray-100 p-3 rounded-lg shadow-sm transition duration-300 hover:shadow-md">
+                    {comment.content}
+                  </p>
+                  <div className="flex justify-between text-sm text-gray-500 mt-1">
+                    <p>
+                      By {comment?.createdBy?.firstName} {comment?.createdBy?.lastName}
+                    </p>
+                    <p>{formattedDate(comment?.createdAt)}</p>
+                    {userDetails?.data?.isModerator && (
+                      <BiTrash
+                        className="cursor-pointer text-red-600 hover:text-red-800 transition duration-300"
+                        size={20}
+                        onClick={() => onDeleteComment(comment._id)}
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
