@@ -134,7 +134,7 @@ function UserProfile() {
               <h1 className="profile-user-name mb-2 text-sm font-serif ">
                 {user?.username}
               </h1>
-              {isFollowing ? (
+              {username==userDetails?.data.username?(<></>):(isFollowing ? (
                 <button
                   className="btn profile-edit-btn"
                   onClick={unfollowhandler}
@@ -150,7 +150,7 @@ function UserProfile() {
                   Follow
                   <FaUserPlus aria-hidden="true" />
                 </button>
-              )}
+              ))}
               <FaUserPlus aria-hidden="true" />
               {userDetails?.data?.role === ACCOUNT_TYPE.ADMIN && (
                 <div>
