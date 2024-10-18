@@ -73,81 +73,69 @@ const CreateBlog = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-md border-slate-800 bg-white p-6 space-y-8"
+      className="bg-gradient-to-r from-gray-50 to-white p-10 rounded-lg shadow-lg max-w-4xl mx-auto space-y-10 transform transition duration-500 ease-in-out"
     >
+      {/* Blog Title */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-black" htmlFor="title">
-          Blog Title<sup className="text-red-800">*</sup>
+        <label className="text-lg font-bold text-gray-700" htmlFor="title">
+          Blog Title <sup className="text-red-500">*</sup>
         </label>
         <input
           id="title"
           placeholder="Enter Blog Title"
           {...register("title", { required: true })}
-          className="form-style w-full border-slate-500"
+          className="w-full border border-gray-300 rounded-lg p-3 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md transition duration-300 ease-in-out"
         />
         {errors.title && (
-          <span className="ml-2 text-xs tracking-wide text-red-800">
-            Blog Title is Required*
-          </span>
+          <span className="text-xs text-red-500">Blog Title is required*</span>
         )}
       </div>
-
+  
+      {/* Blog Content */}
       <div className="flex flex-col space-y-2">
-        <label
-          className="text-sm border-slate-400 text-black-5"
-          htmlFor="content"
-        >
-          Blog Content<sup className="text-red-900">*</sup>
+        <label className="text-lg font-bold text-gray-700" htmlFor="content">
+          Blog Content <sup className="text-red-500">*</sup>
         </label>
-        {/* <textarea
-          id="content"
-          placeholder="Enter Blog Content"
-          {...register("content", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full"
-        /> */}
         <JoditEditor
           ref={editor}
           value={content}
-          // config={config}
-          tabIndex={1} // tabIndex of textarea
-          onBlur={(newContent) => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
-          onChange={(newContent) => {}}
-          name="content"
+          tabIndex={1}
+          onBlur={(newContent) => setContent(newContent)}
+          onChange={() => {}}
+          className="rounded-lg border border-gray-300 p-3 min-h-[150px] bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md transition duration-300 ease-in-out"
         />
         {errors.content && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Blog Content is required**
-          </span>
+          <span className="text-xs text-red-500">Blog Content is required*</span>
         )}
       </div>
-
+  
+      {/* Status */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-black" htmlFor="status">
-          Status<sup className="text-red-900">*</sup>
+        <label className="text-lg font-bold text-gray-700" htmlFor="status">
+          Status <sup className="text-red-500">*</sup>
         </label>
         <select
           id="status"
           {...register("status", { required: true })}
-          className="form-style w-full"
+          className="w-full border border-gray-300 rounded-lg p-3 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md transition duration-300 ease-in-out"
         >
           <option value="Draft">Draft</option>
           <option value="Published">Published</option>
         </select>
         {errors.status && (
-          <span className="ml-2 text-xs tracking-wide text-red-900">
-            Status is required**
-          </span>
+          <span className="text-xs text-red-500">Status is required*</span>
         )}
       </div>
-
+  
+      {/* Category */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="category">
-          Category<sup className="text-red-900">*</sup>
+        <label className="text-lg font-bold text-gray-700" htmlFor="category">
+          Category <sup className="text-red-500">*</sup>
         </label>
         <select
           id="category"
           {...register("category", { required: true })}
-          className="form-style w-full"
+          className="w-full border border-gray-300 rounded-lg p-3 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md transition duration-300 ease-in-out"
         >
           {categories.map((category) => (
             <option key={category._id} value={category.name}>
@@ -155,67 +143,59 @@ const CreateBlog = () => {
             </option>
           ))}
         </select>
-        {/* <input
-          id="category"
-          placeholder="Enter Category"
-          {...register("category", { required: true })}
-          className="form-style w-full"
-        /> */}
         {errors.category && (
-          <span className="ml-2 text-xs tracking-wide text-red-900">
-            Category is required**
-          </span>
+          <span className="text-xs text-red-500">Category is required*</span>
         )}
       </div>
-
+  
+      {/* Tags */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="tags">
-          Tags<sup className="text-red-900">*</sup>
+        <label className="text-lg font-bold text-gray-700" htmlFor="tags">
+          Tags <sup className="text-red-500">*</sup>
         </label>
         <ReactTagInput
           id="tags"
           placeholder="Enter Tags"
           tags={tags}
           onChange={(newTags) => setTags(newTags)}
+          className="w-full border border-gray-300 rounded-lg p-3 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md transition duration-300 ease-in-out"
         />
         {errors.tags && (
-          <span className="ml-2 text-xs tracking-wide text-red-900">
-            Tags are required**
-          </span>
+          <span className="text-xs text-red-500">Tags are required*</span>
         )}
       </div>
-
-      {/* File upload for cover image */}
+  
+      {/* Cover Image */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="coverImg">
-          Cover Image<sup className="text-red-900">*</sup>
+        <label className="text-lg font-bold text-gray-700" htmlFor="coverImg">
+          Cover Image <sup className="text-red-500">*</sup>
         </label>
         <input
           type="file"
           id="coverImg"
           {...register("coverImg", { required: true })}
-          className="form-style"
+          className="w-full file-input rounded-lg border border-gray-300 p-3 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md transition duration-300 ease-in-out"
         />
         {errors.coverImg && (
-          <span className="ml-2 text-xs tracking-wide text-red-900">
-            Cover Image is required**
-          </span>
+          <span className="text-xs text-red-500">Cover Image is required*</span>
         )}
       </div>
-
-      {/* <button
-        type="submit"
-        className="text-black p-2 bg-slate-500 rounded-md mt-2"
-      >
-        Submit
-      </button> */}
-      <div className="flex justify-end gap-x-2">
-        <IconBtn disabled={loading} text={"Submit"}>
+  
+      {/* Submit Button */}
+      <div className="flex justify-end mt-6">
+        <IconBtn
+          disabled={loading}
+          text={loading ? "Submitting..." : "Submit"}
+          className="transition-all duration-300 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
           <MdNavigateNext />
         </IconBtn>
       </div>
     </form>
   );
+  
+  
+  
 };
 
 export default CreateBlog;
