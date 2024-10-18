@@ -124,19 +124,66 @@ function UserProfile() {
   console.log("user inside userprofile", user);
   console.log("userDetails which user login", userDetails);
   return (
+
     <div className="max-w-6xl mx-auto px-4 py-8">
     {/* Profile Header Card */}
     <AboutCard className="mb-8">
-      <div className="p-6">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Profile Image */}
-          <div className="flex-shrink-0">
-            <img 
-              src={user?.additionalDetails?.profileImg} 
-              alt={user?.username}
-              className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
-            />
-          </div>
+      
+
+   
+      <div>
+        <div className="container">
+          <div className="profile">
+            <div className="profile-image">
+              <img src={user?.additionalDetails?.profileImg} alt="" />
+            </div>
+            <div className="profile-user-settings p-2">
+              <h1 className="profile-user-name mb-2 text-sm font-serif ">
+                {user?.username}
+              </h1>
+              {username==userDetails?.data.username?(<></>):(isFollowing ? (
+                <button
+                  className="btn profile-edit-btn"
+                  onClick={unfollowhandler}
+                >
+                  Unfollow
+                  <FaUserMinus aria-hidden="true" />
+                </button>
+              ) : (
+                <button
+                  className="btn profile-edit-btn"
+                  onClick={followHandler}
+                >
+                  Follow
+                  <FaUserPlus aria-hidden="true" />
+                </button>
+              ))}
+              <FaUserPlus aria-hidden="true" />
+              {userDetails?.data?.role === ACCOUNT_TYPE.ADMIN && (
+                <div>
+                  {/* Button for moderator */}
+                  {user?.isModerator ? (
+                    <button
+                      onClick={() => {
+                        removeModerator(user?.username);
+                      }} // Pass username as argument
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Remove Moderator
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        addModerator(user?.username);
+                      }}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Add Moderator
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
 
           {/* Profile Info */}
           <div className="flex-grow">
@@ -211,6 +258,7 @@ function UserProfile() {
           </div>
         </div>
       </div>
+    </div>
     </AboutCard>
 
     {/* Blog Gallery */}
