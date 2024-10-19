@@ -29,171 +29,115 @@ export default function EditProfile() {
   return (
     <>
       <form onSubmit={handleSubmit(submitform)}>
-        <div className="my-10 flex flex-col gap-y-6 rounded-md border-[1px] border-yellow-100 p-8 px-12">
-          <h2 className="text-lg font-semibold text-slate-600">
-            Profile Information
-          </h2>
+        <div className="my-10 flex flex-col gap-y-6 rounded-md border-[1px] border-yellow-100 p-8 px-12 bg-gray-800 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out w-full max-w-[900px] mx-auto">
+          <h2 className="text-2xl font-bold text-slate-200">Profile Information</h2>
           {/* first name and last name */}
           <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="firstName" className="lable-style text-slate-600">
-                First Name
-              </label>
+            <div className="flex flex-col gap-2 w-full lg:w-[48%]">
+              <label htmlFor="firstName" className="text-lg text-slate-400">First Name</label>
               <input
                 type="text"
                 name="firstName"
                 id="firstName"
                 placeholder="Enter first name"
-                className="form-style"
+                className="form-style hover:border-yellow-300 focus:ring-yellow-500 transition-all"
                 {...register("firstName", { required: true })}
                 defaultValue={user?.firstName}
               />
-              {errors.firstName && (
-                <span className="-mt-1 text-[12px] text-yellow-400">
-                  Please enter your first name.
-                </span>
-              )}
+              {errors.firstName && <span className="text-xs text-yellow-400">Please enter your first name.</span>}
             </div>
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="lastName" className="lable-style text-slate-600">
-                Last Name
-              </label>
+            <div className="flex flex-col gap-2 w-full lg:w-[48%]">
+              <label htmlFor="lastName" className="text-lg text-slate-400">Last Name</label>
               <input
                 type="text"
                 name="lastName"
                 id="lastName"
-                placeholder="Enter first name"
-                className="form-style"
+                placeholder="Enter last name"
+                className="form-style hover:border-yellow-300 focus:ring-yellow-500 transition-all"
                 {...register("lastName", { required: true })}
                 defaultValue={user?.lastName}
               />
-              {errors.lastName && (
-                <span className="-mt-1 text-[12px] text-yellow-400">
-                  Please enter your last name.
-                </span>
-              )}
+              {errors.lastName && <span className="text-xs text-yellow-400">Please enter your last name.</span>}
             </div>
           </div>
           {/* dob and gender */}
           <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label
-                htmlFor="dateOfBirth"
-                className="lable-style text-slate-600"
-              >
-                Date of Birth
-              </label>
+            <div className="flex flex-col gap-2 w-full lg:w-[48%]">
+              <label htmlFor="dateOfBirth" className="text-lg text-slate-400">Date of Birth</label>
               <input
                 type="date"
                 name="DOB"
                 id="DOB"
-                className="form-style"
-                {...register("DOB", {
-                  required: {
-                    value: true,
-                    message: "Please enter your Date of Birth.",
-                  },
-                  max: {
-                    value: new Date().toISOString().split("T")[0],
-                    message: "Date of Birth cannot be in the future.",
-                  },
-                })}
+                className="form-style hover:border-yellow-300 focus:ring-yellow-500 transition-all"
+                {...register("DOB", { required: true })}
                 defaultValue={user?.additionalDetails?.DOB}
               />
-              {errors.DOB && (
-                <span className="-mt-1 text-[12px] text-yellow-400">
-                  {errors.DOB.message}
-                </span>
-              )}
+              {errors.DOB && <span className="text-xs text-yellow-400">Please enter your Date of Birth.</span>}
             </div>
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="gender" className="lable-style text-slate-500">
-                Gender
-              </label>
+            <div className="flex flex-col gap-2 w-full lg:w-[48%]">
+              <label htmlFor="gender" className="text-lg text-slate-400">Gender</label>
               <select
-                type="text"
                 name="gender"
                 id="gender"
-                className="form-style"
+                className="form-style hover:border-yellow-300 focus:ring-yellow-500 transition-all"
                 {...register("gender", { required: true })}
                 defaultValue={user?.additionalDetails?.gender}
               >
-                {genders.map((ele, i) => {
-                  return (
-                    <option key={i} value={ele}>
-                      {ele}
-                    </option>
-                  );
-                })}
+                {genders.map((ele, i) => (
+                  <option key={i} value={ele}>{ele}</option>
+                ))}
               </select>
-              {errors.gender && (
-                <span className="-mt-1 text-[12px] text-yellow-400">
-                  Please enter your Date of Birth.
-                </span>
-              )}
+              {errors.gender && <span className="text-xs text-yellow-400">Please select your gender.</span>}
             </div>
           </div>
           {/* contact no and about */}
           <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="contactNo" className="lable-style text-slate-600">
-                Contact Number
-              </label>
+            <div className="flex flex-col gap-2 w-full lg:w-[48%]">
+              <label htmlFor="contactNo" className="text-lg text-slate-400">Contact Number</label>
               <input
                 type="tel"
                 name="contactNo"
                 id="contactNo"
                 placeholder="Enter Contact Number"
-                className="form-style"
-                {...register("contactNo", {
-                  required: {
-                    value: true,
-                    message: "Please enter your Contact Number.",
-                  },
-                  maxLength: { value: 12, message: "Invalid Contact Number" },
-                  minLength: { value: 10, message: "Invalid Contact Number" },
-                })}
+                className="form-style hover:border-yellow-300 focus:ring-yellow-500 transition-all"
+                {...register("contactNo", { required: true })}
                 defaultValue={user?.additionalDetails?.contactNo}
               />
-              {errors.contactNo && (
-                <span className="-mt-1 text-[12px] text-yellow-400">
-                  {errors.contactNo.message}
-                </span>
-              )}
+              {errors.contactNo && <span className="text-xs text-yellow-400">Please enter your Contact Number.</span>}
             </div>
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="about" className="lable-style text-slate-800">
-                About
-              </label>
+            <div className="flex flex-col gap-2 w-full lg:w-[48%]">
+              <label htmlFor="about" className="text-lg text-slate-400">About</label>
               <input
                 type="text"
                 name="about"
                 id="about"
                 placeholder="Enter Bio Details"
-                className="form-style text-slate-800"
+                className="form-style hover:border-yellow-300 focus:ring-yellow-500 transition-all"
                 {...register("about", { required: true })}
                 defaultValue={user?.additionalDetails?.about}
               />
-              {errors.about && (
-                <span className="-mt-1 text-[12px] text-yellow-400">
-                  Please enter your About.
-                </span>
-              )}
+              {errors.about && <span className="text-xs text-yellow-400">Please enter your About.</span>}
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-2">
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-2 mt-4 w-full max-w-[900px] mx-auto">
           <button
-            onClick={() => {
-              navigate("/dashboard/my-profile");
-            }}
-            className="cursor-pointer rounded-md bg-slate-600 py-2 px-5 font-semibold text-white "
+            onClick={() => { navigate("/dashboard/my-profile"); }}
+            className="w-full max-w-[150px] cursor-pointer rounded-md bg-slate-600 py-2 text-center font-semibold text-white hover:bg-slate-500 transition-all shadow-md"
           >
             Cancel
           </button>
-          <IconBtn type="submit" className="hover:bg-yellow-400" text="Save" />
+          <IconBtn 
+            type="submit" 
+            text="Save" 
+            className="w-full max-w-[150px] cursor-pointer rounded-md bg-blue-600 py-2 text-center font-semibold text-white hover:bg-blue-500 transition-all shadow-md"
+          />
         </div>
       </form>
     </>
   );
+  
+  
+  
 }

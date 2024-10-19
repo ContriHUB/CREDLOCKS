@@ -6,18 +6,20 @@ import DeleteAccount from "./DeleteAccount";
 import UpdatePassword from "./UpdatePassword";
 const index = () => {
   return (
-    <div>
-      <h1 className="mb-14 text-3xl font-medium text-slate-800">
+    <div className="bg-gray-900 min-h-screen p-8">
+      <h1 className="mb-14 text-4xl font-bold text-yellow-300 uppercase tracking-wider text-center">
         Edit Profile
       </h1>
-      {/* Profile */}
+
       <EditProfile />
-      {/* EditPassword */}
+
       <UpdatePassword />
-      {/* Delete Account */}
+
       <DeleteAccount />
     </div>
   );
+  
+  
 };
 
 export default index;
