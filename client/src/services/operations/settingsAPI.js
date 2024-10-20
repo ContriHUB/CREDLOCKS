@@ -36,9 +36,10 @@ export const fetchUserDetails = async (token) => {
 };
 
 // update user details
-export function updateProfile(token, formData) {
+export function updateProfile(formData,token) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...");
+    //console.log(UPDATE_PROFILE_API);
     try {
       const response = await apiConnector("PUT", UPDATE_PROFILE_API, formData, {
         Authorization: `Bearer ${token}`,

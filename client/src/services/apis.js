@@ -16,6 +16,7 @@ export const settingsEndpoints = {
   UNBLOCK_USER_API: BASE_URL + "/profile/unblockUser",
   GET_USER_BY_USERNAME_API: BASE_URL + "/auth/getUserByUsername",
   Follow_USER_API: BASE_URL + "/auth/followUser",
+  UPDATE_PROFILE_API: BASE_URL+"/auth/updateProfile",
   UNFOLLOW_USER_API: BASE_URL + "/auth/unfollowUser",
   CHANGE_PASSWORD_API: BASE_URL + "/auth/changePassword",
 };
