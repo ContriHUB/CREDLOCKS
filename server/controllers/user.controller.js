@@ -273,6 +273,7 @@ export const updateProfile = async (req, res) => {
         message: "User not found",
       });
     }
+    console.log(user);
     const { dob, gender, firstName, lastName, contactNumber, about } = req.body;
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
