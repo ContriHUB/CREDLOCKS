@@ -22,6 +22,7 @@ import {
   removeModeratorAPI,
 } from "../services/operations/blogAPI";
 import { setUserDetails } from "../slices/profileSlice";
+import AboutCard from "../components/UI/AboutCard";
 function UserProfile() {
   const { username } = useParams();
   const { token } = useSelector((state) => state.auth);
@@ -123,7 +124,13 @@ function UserProfile() {
   console.log("user inside userprofile", user);
   console.log("userDetails which user login", userDetails);
   return (
-    <div>
+
+    <div className="max-w-6xl mx-auto px-4 py-8">
+    {/* Profile Header Card */}
+    <AboutCard className="mb-8">
+      
+
+   
       <div>
         <div className="container">
           <div className="profile">
@@ -178,85 +185,117 @@ function UserProfile() {
               )}
             </div>
 
-            <div className="profile-stats">
-              <ul>
-                <li>
-                  <span className="profile-stat-count">
-                    {user?.blogs?.length}
-                  </span>{" "}
-                  posts
-                </li>
+          {/* Profile Info */}
+          <div className="flex-grow">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h1 className="text-2xl font-semibold mb-1">{user?.username}</h1>
+                <p className="text-gray-600 uppercase">
+                  {user?.firstName} {user?.lastName}
+                </p>
+              </div>
 
-                <li>
-                  <span className="profile-stat-count">
-                    {user?.followers.length}
-                  </span>{" "}
-                  followers
-                </li>
-                <li>
-                  <span className="profile-stat-count">
-                    {user?.following?.length}
-                  </span>{" "}
-                  following
-                </li>
-              </ul>
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                {isFollowing ? (
+                  <button
+                    onClick={unfollowhandler}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition"
+                  >
+                    <FaUserMinus />
+                    Unfollow
+                  </button>
+                ) : (
+                  <button
+                    onClick={followHandler}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded-lg transition"
+                  >
+                    <FaUserPlus />
+                    Follow
+                  </button>
+                )}
+
+                {/* Admin Controls */}
+                {userDetails?.data?.role === ACCOUNT_TYPE.ADMIN && (
+                  <button
+                    onClick={() => user?.isModerator ? removeModerator(user?.username) : addModerator(user?.username)}
+                    className={`px-4 py-2 rounded-lg transition ${
+                      user?.isModerator 
+                        ? 'bg-red-500 hover:bg-red-600 text-white'
+                        : 'bg-blue-500 hover:bg-blue-600 text-white'
+                    }`}
+                  >
+                    {user?.isModerator ? 'Remove Moderator' : 'Add Moderator'}
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="profile-bio">
-              <p>
-                <span className="profile-real-name uppercase">
-                  {user.firstName} {user.lastName}
-                </span>
-                {/* <li> */}
-                <span className="profile-stat-count flex flex-row gap-2">
-                  <FaCoins />
-                  {user?.contributions} contributions
-                </span>{" "}
-                {/* </li> */}
-                <span className="profile-stat-count flex flex-row gap-2">
-                  {user?.additionalDetails?.about}
-                </span>
-              </p>
+
+            {/* Stats */}
+            <div className="flex gap-8 mb-4">
+              <div className="text-center">
+                <span className="block text-xl font-bold">{user?.blogs?.length}</span>
+                <span className="text-gray-600">posts</span>
+              </div>
+              <div className="text-center">
+                <span className="block text-xl font-bold">{user?.followers?.length}</span>
+                <span className="text-gray-600">followers</span>
+              </div>
+              <div className="text-center">
+                <span className="block text-xl font-bold">{user?.following?.length}</span>
+                <span className="text-gray-600">following</span>
+              </div>
+            </div>
+
+            {/* Bio & Contributions */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-gray-600">
+                <FaCoins className="text-yellow-500" />
+                <span>{user?.contributions} contributions</span>
+              </div>
+              <p className="text-gray-600">{user?.additionalDetails?.about}</p>
             </div>
           </div>
-        </div>
-      </div>
-      <div>
-        <div className=" container">
-          <div className="gallery">
-            {/* Render gallery items */}
-            {user?.blogs.map((item) => (
-              <Link to={`/blog/getBlogs/${item._id}`} key={item._id}>
-                <div className="gallery-item" tabIndex="0">
-                  <img src={item.coverImg} className="gallery-image" alt="" />
-                  <div className="gallery-item-info flex flex-col">
-                    <li className="gallery-item-likes mt-1">
-                      <span className="visually-hidden ">Likes:</span>
-                      <i className="fas fa-heart" aria-hidden="true"></i>{" "}
-                      {item?.title}
-                    </li>
-                    <ul>
-                      <li className="gallery-item-likes">
-                        <span className="visually-hidden font-extrabold text-black">
-                          Likes:
-                        </span>
-                        <FaHeart aria-hidden="true" /> {item?.upvotes.length}
-                      </li>
-
-                      <li className="gallery-item-comments">
-                        <span className="visually-hidden">Comments:</span>
-                        <FaComment aria-hidden="true" />
-                        {item?.comments.length}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-          {/* <div className="loader"></div> */}
         </div>
       </div>
     </div>
+    </AboutCard>
+
+    {/* Blog Gallery */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {user?.blogs.map((blog) => (
+        <Link 
+          to={`/blog/getBlogs/${blog._id}`} 
+          key={blog._id}
+          className="group"
+        >
+          <AboutCard className="overflow-hidden h-full hover:shadow-lg transition-shadow">
+            <div className="relative aspect-video">
+              <img 
+                src={blog.coverImg} 
+                alt={blog.title}
+                className="w-full h-full object-cover"
+              />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 text-white">
+                <h3 className="font-semibold mb-2">{blog.title}</h3>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <FaHeart />
+                    <span>{blog.upvotes.length}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <FaComment />
+                    <span>{blog.comments.length}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AboutCard>
+        </Link>
+      ))}
+    </div>
+  </div>
   );
 }
 
