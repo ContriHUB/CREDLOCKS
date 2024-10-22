@@ -140,7 +140,9 @@ function UserProfile() {
                   onClick={unfollowhandler}
                 >
                   Unfollow
+                  <span>
                   <FaUserMinus aria-hidden="true" />
+                  </span>
                 </button>
               ) : (
                 <button
@@ -148,7 +150,9 @@ function UserProfile() {
                   onClick={followHandler}
                 >
                   Follow
+                  <span>
                   <FaUserPlus aria-hidden="true" />
+                  </span>
                 </button>
               ))}
               <FaUserPlus aria-hidden="true" />
@@ -178,44 +182,41 @@ function UserProfile() {
               )}
             </div>
 
-            <div className="profile-stats">
-              <ul>
-                <li>
-                  <span className="profile-stat-count">
-                    {user?.blogs?.length}
-                  </span>{" "}
-                  posts
-                </li>
-
-                <li>
-                  <span className="profile-stat-count">
-                    {user?.followers.length}
-                  </span>{" "}
-                  followers
-                </li>
-                <li>
-                  <span className="profile-stat-count">
-                    {user?.following?.length}
-                  </span>{" "}
-                  following
-                </li>
-              </ul>
-            </div>
             <div className="profile-bio">
               <p>
-                <span className="profile-real-name uppercase">
+                <span className="profile-real-name">
                   {user.firstName} {user.lastName}
                 </span>
                 {/* <li> */}
-                <span className="profile-stat-count flex flex-row gap-2">
+                <span className="contributions profile-stat-count flex flex-row gap-2">
                   <FaCoins />
                   {user?.contributions} contributions
                 </span>{" "}
                 {/* </li> */}
-                <span className="profile-stat-count flex flex-row gap-2">
+                <span className="discription profile-stat-count flex flex-row gap-2">
                   {user?.additionalDetails?.about}
                 </span>
               </p>
+            </div>
+            <div className="profile-stats">
+              <ul>
+                <li>
+                  <span className="profile-stat-count profile-sub-stat-count">
+                    {user?.blogs?.length} posts
+                  </span>
+                </li>
+
+                <li>
+                  <span className="profile-stat-count profile-sub-stat-count">
+                    {user?.followers.length} followers
+                  </span>
+                </li>
+                <li>
+                  <span className="profile-stat-count profile-sub-stat-count">
+                    {user?.following?.length} following
+                  </span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
